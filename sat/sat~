@@ -1,0 +1,52 @@
+#!/usr/bin/env sh
+
+# Verificar que el usuario ingrese al menos un argumento
+if [ "$#" -lt 2 ]; then
+    echo "Uso: sat <comando> <archivo>"
+    echo "Comandos disponibles:"
+    echo "  prueba <archivo.c>   → Compila el archivo .c con reglas Holberton"
+    echo "  betty <archivo.c>    → Verifica el estilo con Betty"
+    echo "  help                 → Muestra este mensaje"
+    exit 1
+fi
+
+comando="$1"
+archivo="$2"
+
+case "$comando" in
+    prueba)
+        echo "🔧 Compilando $archivo..."
+        gcc -Wall -Werror -Wextra -pedantic -std=gnu89 "$archivo" -o "${archivo%.c}"
+        if [ $? -eq 0 ]; then
+            echo "✅ Compilación exitosa: ${archivo%.c}"
+        else
+            echo "❌ Error en la compilación."
+        fi
+        ;;
+    
+    betty)
+        echo "🔍 Ejecutando Betty en $archivo..."
+        if command -v betty >/dev/null 2>&1; then
+            betty "$archivo"
+        elif [ -f "/usr/local/Betty/betty-style.pl" ]; then
+            /usr/local/Betty/betty-style.pl "$archivo"
+        else
+            echo "❌ Error: Betty no está instalado o no se encontró."
+        fi
+        ;;
+    
+    help)
+        echo "💡 SAT - Shell Automation Tool"
+        echo "Uso: sat <comando> <archivo>"
+        echo "Comandos disponibles:"
+        echo "  prueba <archivo.c>   → Compila el archivo .c con reglas Holberton"
+        echo "  betty <archivo.c>    → Verifica el estilo con Betty"
+        echo "  help                 → Muestra este mensaje"
+        ;;
+    
+    *)
+        echo "❌ Error: Comando no reconocido. Usa 'sat help' para ver los comandos disponibles."
+        exit 1
+        ;;
+esac
+
